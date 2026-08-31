@@ -1,0 +1,14 @@
+{
+  "id": "food",
+  "name": "Food & Drink",
+  "words": [
+    { "word": "Pizza", "difficulty": "easy", "category": "food" },
+    { "word": "Sushi", "difficulty": "normal", "category": "food" },
+    { "word": "Hamburger", "difficulty": "easy", "category": "food" },
+    { "word": "Coffee", "difficulty": "easy", "category": "drink" },
+    { "word": "Croissant", "difficulty": "normal", "category": "food" },
+    { "word": "Spaghetti", "difficulty": "normal", "category": "food" },
+    { "word": "Ice Cream", "difficulty": "easy", "category": "dessert" },
+    { "word": "Avocado", "difficulty": "normal", "category": "food" }
+  ]
+}

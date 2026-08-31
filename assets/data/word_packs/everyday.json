@@ -1,0 +1,14 @@
+{
+  "id": "everyday",
+  "name": "Everyday Objects",
+  "words": [
+    { "word": "Airport", "difficulty": "normal", "category": "places" },
+    { "word": "Toothbrush", "difficulty": "easy", "category": "objects" },
+    { "word": "Refrigerator", "difficulty": "normal", "category": "objects" },
+    { "word": "Umbrella", "difficulty": "easy", "category": "objects" },
+    { "word": "Bicycle", "difficulty": "easy", "category": "vehicles" },
+    { "word": "Smartphone", "difficulty": "easy", "category": "technology" },
+    { "word": "Mirror", "difficulty": "normal", "category": "objects" },
+    { "word": "Wallet", "difficulty": "normal", "category": "objects" }
+  ]
+}

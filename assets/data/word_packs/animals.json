@@ -1,0 +1,14 @@
+{
+  "id": "animals",
+  "name": "Animals",
+  "words": [
+    { "word": "Elephant", "difficulty": "easy", "category": "mammals" },
+    { "word": "Penguin", "difficulty": "easy", "category": "birds" },
+    { "word": "Kangaroo", "difficulty": "normal", "category": "mammals" },
+    { "word": "Dolphin", "difficulty": "easy", "category": "mammals" },
+    { "word": "Chameleon", "difficulty": "hard", "category": "reptiles" },
+    { "word": "Octopus", "difficulty": "normal", "category": "mollusks" },
+    { "word": "Ostrich", "difficulty": "normal", "category": "birds" },
+    { "word": "Sloth", "difficulty": "normal", "category": "mammals" }
+  ]
+}
