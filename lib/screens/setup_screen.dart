@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../widgets/primary_button.dart';
+import '../widgets/app_player_row.dart';
+import '../widgets/app_setting_row.dart';
 import '../theme/colors.dart';
 import '../models/player.dart';
 import '../services/game_engine.dart';
@@ -43,136 +45,165 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
   @override
   Widget build(BuildContext context) {
     final wordPacksAsync = ref.watch(wordPacksProvider);
+    final settings = ref.watch(settingsProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('SETUP GAME'),
+        title: const Text('Create Game'),
         backgroundColor: Colors.transparent,
         elevation: 0,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () => context.push('/settings'),
-          ),
-        ],
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => context.pop(),
+        ),
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Player Count
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+              child: Row(
                 children: [
                   Text(
-                    'Players',
-                    style: Theme.of(context).textTheme.titleLarge,
+                    'PLAYERS',
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                          color: AppColors.textSecondary,
+                          letterSpacing: 1.5,
+                        ),
                   ),
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.remove_circle_outline),
-                        color: AppColors.textPrimary,
-                        onPressed: _playerCount > 4
-                            ? () {
-                                setState(() {
-                                  _playerCount--;
-                                  _nameControllers.removeLast().dispose();
-                                });
-                              }
-                            : null,
-                      ),
-                      Text(
-                        '$_playerCount',
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.add_circle_outline),
-                        color: AppColors.textPrimary,
-                        onPressed: _playerCount < 10
-                            ? () {
-                                setState(() {
-                                  _playerCount++;
-                                  _nameControllers.add(TextEditingController(
-                                      text: 'Player $_playerCount'));
-                                });
-                              }
-                            : null,
-                      ),
-                    ],
+                  const SizedBox(width: 16),
+                  Text(
+                    '$_playerCount / 12',
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                          color: AppColors.accent,
+                        ),
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
-              
-              Text(
-                'Player Names',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              const SizedBox(height: 16),
-              
-              Expanded(
-                child: ListView.builder(
-                  itemCount: _playerCount,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 12.0),
-                      child: TextField(
-                        controller: _nameControllers[index],
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: AppColors.surface,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide.none,
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 16,
-                          ),
-                        ),
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
+            ),
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                children: [
+                  // Player List
+                  ...List.generate(_playerCount, (index) {
+                    return AppPlayerRow(
+                      name: _nameControllers[index].text,
+                      controller: _nameControllers[index],
+                      onChanged: (val) {
+                        // Triggers rebuild for initial update
+                        setState(() {});
+                      },
+                      onRemove: () {
+                        if (_playerCount > 4) {
+                          setState(() {
+                            _playerCount--;
+                            _nameControllers.removeAt(index).dispose();
+                          });
+                        }
+                      },
                     );
-                  },
-                ),
-              ),
-              
-              const SizedBox(height: 16),
-              wordPacksAsync.when(
-                data: (packs) {
-                  if (packs.isEmpty) {
-                    return const Center(child: Text('No word packs found'));
-                  }
-                  return PrimaryButton(
-                    text: 'START GAME',
-                    onPressed: () {
-                      final players = _nameControllers.asMap().entries.map((e) {
-                        return Player(
-                          id: e.key.toString(),
-                          name: e.value.text.trim().isEmpty ? 'Player ${e.key + 1}' : e.value.text.trim(),
-                        );
-                      }).toList();
-                      
-                      final settings = ref.read(settingsProvider);
-                      
-                      ref.read(gameEngineProvider.notifier).startGame(
-                        settings.copyWith(playerCount: _playerCount), 
-                        players, 
-                        packs.first,
+                  }),
+                  
+                  const SizedBox(height: 8),
+                  
+                  // Add Player Button
+                  OutlinedButton(
+                    onPressed: _playerCount < 12 ? () {
+                      setState(() {
+                        _playerCount++;
+                        _nameControllers.add(TextEditingController(text: 'Player $_playerCount'));
+                      });
+                    } : null,
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.accent,
+                      side: BorderSide(color: AppColors.accent.withAlpha(76), width: 1.5), // Subtle purple outline
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    ),
+                    child: Text(
+                      '+ Add Player',
+                      style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                            color: AppColors.accent,
+                          ),
+                    ),
+                  ),
+                  
+                  const SizedBox(height: 32),
+                  
+                  // Settings Rows
+                  wordPacksAsync.when(
+                    data: (packs) {
+                      final packName = packs.isNotEmpty ? packs.first.name : 'Default';
+                      // Capitalize first letter properly if needed, but assuming data is fine.
+                      return AppSettingRow(
+                        label: 'Word Pack',
+                        value: packName,
+                        onTap: () {
+                          // Navigation or selection bottom sheet could go here.
+                        },
                       );
-                      
-                      context.push('/pass_phone');
                     },
-                  );
-                },
-                loading: () => const PrimaryButton(text: 'LOADING...', isLoading: true),
-                error: (err, stack) => Center(child: Text('Error: $err')),
+                    loading: () => const SizedBox(),
+                    error: (err, stack) => const SizedBox(),
+                  ),
+                  
+                  AppSettingRow(
+                    label: 'Difficulty',
+                    value: 'Normal',
+                    onTap: () {},
+                  ),
+                  
+                  AppSettingRow(
+                    label: 'Question Time',
+                    value: '${settings.questionTime.inSeconds} sec',
+                    onTap: () => context.push('/settings'),
+                  ),
+                  
+                  AppSettingRow(
+                    label: 'Discussion Time',
+                    value: '${settings.discussionTime.inSeconds} sec',
+                    onTap: () => context.push('/settings'),
+                  ),
+                  
+                  const SizedBox(height: 32),
+                  
+                  // Start Game Button
+                  wordPacksAsync.when(
+                    data: (packs) {
+                      return PrimaryButton(
+                        text: 'Start Game',
+                        onPressed: packs.isEmpty ? null : () {
+                          final players = _nameControllers.asMap().entries.map((e) {
+                            final name = e.value.text.trim();
+                            return Player(
+                              id: e.key.toString(),
+                              name: name.isEmpty ? 'Player ${e.key + 1}' : name,
+                            );
+                          }).toList();
+                          
+                          ref.read(gameEngineProvider.notifier).startGame(
+                            settings.copyWith(playerCount: _playerCount), 
+                            players, 
+                            packs.first,
+                          );
+                          
+                          context.push('/pass_phone');
+                        },
+                      );
+                    },
+                    loading: () => const PrimaryButton(text: 'Loading...', isLoading: true),
+                    error: (err, _) => const PrimaryButton(text: 'Error'),
+                  ),
+                  
+                  const SizedBox(height: 24),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

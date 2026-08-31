@@ -19,60 +19,55 @@ class DiscussionScreen extends ConsumerWidget {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 40.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 32),
               Text(
-                'WHO KNEW TOO MUCH?',
+                'DISCUSSION ROUND',
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: AppColors.agentAccent,
-                  letterSpacing: 1.5,
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                  color: AppColors.hostAccent,
+                  letterSpacing: 2,
                 ),
               ),
-              const Spacer(),
+              const Spacer(flex: 1),
               
-              CountdownTimer(
-                duration: session.settings.discussionTime,
-                onTimerComplete: () {
-                  // Timer expired, optionally auto-proceed to voting
-                },
-              ),
-              
-              const Spacer(),
-              
-              Container(
-                padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  color: AppColors.surface,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Column(
-                  children: [
-                    Text(
-                      'Discuss:',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      '• Who asked suspiciously useful questions?\n\n'
-                      '• Who seemed to know where the conversation was going?\n\n'
-                      '• Who helped at exactly the right moment?',
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: AppColors.textSecondary,
-                        height: 1.5,
-                      ),
-                    ),
-                  ],
+              Text(
+                'Who knew\ntoo much?',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                  color: AppColors.textPrimary,
+                  height: 1.2,
                 ),
               ),
               
               const Spacer(flex: 2),
               
+              Center(
+                child: CountdownTimer(
+                  duration: session.settings.discussionTime,
+                  onTimerComplete: () {
+                    // Timer expired, optionally auto-proceed to voting
+                  },
+                ),
+              ),
+              
+              const Spacer(flex: 2),
+              
+              Text(
+                'Discuss and decide.\nThen vote privately.',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: AppColors.textSecondary,
+                  height: 1.5,
+                ),
+              ),
+              
+              const Spacer(flex: 3),
+              
               PrimaryButton(
-                text: 'START VOTING',
+                text: 'Start Voting',
                 onPressed: () {
                   engine.startVoting();
                   context.push('/pass_phone');

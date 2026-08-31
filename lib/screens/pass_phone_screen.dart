@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../widgets/primary_button.dart';
+import '../widgets/role_icon.dart';
 import '../theme/colors.dart';
 import '../services/game_engine.dart';
 import '../models/game_session.dart';
@@ -29,39 +30,38 @@ class PassPhoneScreen extends ConsumerWidget {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 40.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Spacer(),
+              const Spacer(flex: 3),
+              const RoleIcon(
+                icon: Icons.mobile_screen_share,
+                color: AppColors.accent,
+                size: 100,
+              ),
+              const SizedBox(height: 48),
               Text(
-                'PASS THE PHONE',
+                'Pass the phone\nto ',
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: AppColors.textSecondary,
-                  letterSpacing: 2,
+                style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                  color: AppColors.textPrimary,
+                  height: 1.3,
+                  fontWeight: FontWeight.w400,
                 ),
               ),
-              const SizedBox(height: 16),
               Text(
-                'TO',
+                currentPlayer.name,
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppColors.textSecondary,
+                style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                  color: AppColors.lightAccent,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
-              const SizedBox(height: 16),
-              Text(
-                currentPlayer.name.toUpperCase(),
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                  color: AppColors.accent,
-                ),
-              ),
-              const Spacer(),
+              const Spacer(flex: 4),
               PrimaryButton(
-                text: "I'M READY",
+                text: "I'm Ready",
                 onPressed: () {
                   if (gameSession.currentPhase == GamePhase.roleReveal) {
                     context.push('/role_reveal');
@@ -69,6 +69,15 @@ class PassPhoneScreen extends ConsumerWidget {
                     context.push('/voting');
                   }
                 },
+              ),
+              const SizedBox(height: 16),
+              Text(
+                "Don't show names or roles.\nJust pass it.",
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: AppColors.textDisabled,
+                  height: 1.4,
+                ),
               ),
             ],
           ),

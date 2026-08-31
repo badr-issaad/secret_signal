@@ -18,7 +18,7 @@ class WordRevealScreen extends ConsumerWidget {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 40.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -38,20 +38,21 @@ class WordRevealScreen extends ConsumerWidget {
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.displayLarge?.copyWith(
                   color: AppColors.textPrimary,
+                  letterSpacing: 2,
                 ),
               ),
               const Spacer(),
               Text(
-                'BUT SOMEONE ALREADY KNEW IT.',
+                'But someone already knew it.',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   color: AppColors.agentAccent,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.normal,
                 ),
               ),
               const Spacer(flex: 2),
               PrimaryButton(
-                text: 'START DISCUSSION',
+                text: 'Start Discussion',
                 onPressed: () {
                   engine.startDiscussion();
                   context.push('/discussion');
@@ -64,3 +65,4 @@ class WordRevealScreen extends ConsumerWidget {
     );
   }
 }
+

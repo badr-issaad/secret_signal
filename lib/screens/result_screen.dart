@@ -58,7 +58,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 40.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -72,11 +72,12 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     color: AppColors.textSecondary,
+                    letterSpacing: 1.5,
                   ),
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  accusedName.toUpperCase(),
+                  accusedName,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.displayLarge?.copyWith(
                     color: AppColors.textPrimary,
@@ -121,15 +122,16 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                 ],
                 if (accusedName != agentName) ...[
                   Text(
-                    'THE REAL AGENT WAS',
+                    'The real Agent was',
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       color: AppColors.textSecondary,
+                      fontWeight: FontWeight.normal,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    agentName.toUpperCase(),
+                    agentName,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.displayMedium?.copyWith(
                       color: AppColors.agentAccent,
@@ -147,11 +149,12 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.displayLarge?.copyWith(
                     color: agentWon ? AppColors.agentAccent : AppColors.accent,
+                    letterSpacing: 2,
                   ),
                 ),
                 const Spacer(),
                 PrimaryButton(
-                  text: 'SCOREBOARD',
+                  text: 'Scoreboard',
                   onPressed: () {
                     context.go('/scoreboard');
                   },
@@ -164,3 +167,4 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
     );
   }
 }
+

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../theme/colors.dart';
 import '../services/game_engine.dart';
 import '../models/role.dart';
+import '../widgets/app_card.dart';
 
 class GuesserScreen extends ConsumerWidget {
   const GuesserScreen({super.key});
@@ -19,24 +20,30 @@ class GuesserScreen extends ConsumerWidget {
     final eligiblePlayers = session.players.where((p) => session.playerRoles[p.id] != GameRole.host).toList();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('WHO FOUND IT?'),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 40.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                'Select the player who correctly guessed the secret word.',
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                'WHO FOUND IT?',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(
                   color: AppColors.textSecondary,
+                  letterSpacing: 2,
                 ),
               ),
               const SizedBox(height: 24),
+              Text(
+                'Select the player who correctly guessed the secret word.',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: AppColors.textSecondary,
+                  height: 1.5,
+                ),
+              ),
+              const SizedBox(height: 48),
               Expanded(
                 child: ListView.builder(
                   itemCount: eligiblePlayers.length,
@@ -50,15 +57,13 @@ class GuesserScreen extends ConsumerWidget {
                           context.push('/word_reveal');
                         },
                         borderRadius: BorderRadius.circular(16),
-                        child: Container(
+                        child: AppCard(
                           padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: AppColors.surface,
-                            borderRadius: BorderRadius.circular(16),
-                          ),
                           child: Text(
                             player.name,
-                            style: Theme.of(context).textTheme.titleLarge,
+                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              color: AppColors.textPrimary,
+                            ),
                           ),
                         ),
                       ),
@@ -73,3 +78,4 @@ class GuesserScreen extends ConsumerWidget {
     );
   }
 }
+

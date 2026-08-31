@@ -15,18 +15,19 @@ class SecondaryButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 60,
-      child: OutlinedButton(
+      height: 56,
+      child: ElevatedButton(
         onPressed: onPressed,
-        style: OutlinedButton.styleFrom(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.surface,
           foregroundColor: AppColors.textPrimary,
-          side: const BorderSide(color: AppColors.surface, width: 2),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(12),
           ),
+          elevation: 0,
         ),
         child: Text(
-          text.toUpperCase(),
+          text,
           style: Theme.of(context).textTheme.labelLarge?.copyWith(
                 color: AppColors.textPrimary,
                 fontWeight: FontWeight.w600,

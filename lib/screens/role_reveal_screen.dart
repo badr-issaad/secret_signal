@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../widgets/primary_button.dart';
+import '../widgets/app_card.dart';
+import '../widgets/role_icon.dart';
 import '../theme/colors.dart';
 import '../services/game_engine.dart';
 import '../models/game_session.dart';
@@ -17,10 +19,12 @@ class RoleRevealScreen extends ConsumerStatefulWidget {
 
 class _RoleRevealScreenState extends ConsumerState<RoleRevealScreen> {
   bool _isRevealed = false;
+  bool _hasRevealed = false;
 
   void _onPointerDown(PointerDownEvent event) {
     setState(() {
       _isRevealed = true;
+      _hasRevealed = true;
     });
     HapticFeedback.mediumImpact();
   }
@@ -46,73 +50,61 @@ class _RoleRevealScreenState extends ConsumerState<RoleRevealScreen> {
 
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: 32),
-              Text(
-                'YOUR ROLE',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: AppColors.textSecondary,
-                  letterSpacing: 2,
-                ),
-              ),
-              const Spacer(),
-              
-              // Reveal Area
-              Listener(
+        child: Column(
+          children: [
+            Expanded(
+              child: Listener(
                 onPointerDown: _onPointerDown,
                 onPointerUp: _onPointerUp,
                 onPointerCancel: _onPointerUp,
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  height: 300,
-                  decoration: BoxDecoration(
-                    color: _isRevealed ? AppColors.surface : AppColors.surface.withAlpha(128),
-                    borderRadius: BorderRadius.circular(24),
-                    border: Border.all(
-                      color: _isRevealed ? _getRoleColor(role) : AppColors.surface,
-                      width: 2,
-                    ),
-                  ),
-                  child: Center(
+                behavior: HitTestBehavior.opaque,
+                child: SizedBox(
+                  width: double.infinity,
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 200),
                     child: _isRevealed 
                       ? _buildRevealedContent(role, secretWord, context)
-                      : Text(
-                          'HOLD TO REVEAL',
-                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            color: AppColors.textSecondary,
-                          ),
-                        ),
+                      : _buildHiddenContent(context),
                   ),
                 ),
               ),
-              
-              const Spacer(),
-              
-              // Only show NEXT button after they have revealed (for simplicity in phase 2, we just always show it, or we could track if they have revealed it once).
-              // Let's show it always but maybe disabled? No, let's keep it simple.
-              PrimaryButton(
-                text: 'NEXT PLAYER',
-                onPressed: () {
-                  engine.nextRevealPlayer();
-                  final currentPhase = ref.read(gameEngineProvider)!.currentPhase;
-                  
-                  if (currentPhase == GamePhase.questionRound) {
-                    // Everyone has seen their role
-                    context.go('/question_round'); // Will implement in Phase 3
-                  } else {
-                    context.pop(); // Go back to pass phone screen
-                  }
-                },
+            ),
+            if (_hasRevealed && !_isRevealed)
+              Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: PrimaryButton(
+                  text: 'Next Player',
+                  onPressed: () {
+                    engine.nextRevealPlayer();
+                    final currentPhase = ref.read(gameEngineProvider)!.currentPhase;
+                    
+                    if (currentPhase == GamePhase.questionRound) {
+                      context.go('/question_round');
+                    } else {
+                      context.pop(); // Go back to pass phone screen
+                    }
+                  },
+                ),
               ),
-            ],
-          ),
+          ],
         ),
       ),
+    );
+  }
+
+  Widget _buildHiddenContent(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Icon(Icons.touch_app, size: 64, color: AppColors.textSecondary),
+        const SizedBox(height: 24),
+        Text(
+          'Hold to Reveal',
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            color: AppColors.textSecondary,
+          ),
+        ),
+      ],
     );
   }
 
@@ -127,66 +119,99 @@ class _RoleRevealScreenState extends ConsumerState<RoleRevealScreen> {
     }
   }
 
+  IconData _getRoleIcon(GameRole role) {
+    switch (role) {
+      case GameRole.host:
+        return Icons.emoji_events; // Crown equivalent
+      case GameRole.agent:
+        return Icons.person_outline; // Spy/Agent equivalent
+      case GameRole.seeker:
+        return Icons.search;
+    }
+  }
+
   Widget _buildRevealedContent(GameRole role, String secretWord, BuildContext context) {
     String description = '';
-    bool showsWord = false;
+    String article = role == GameRole.seeker ? 'a' : 'the';
 
     switch (role) {
       case GameRole.host:
-        description = 'Answer questions with YES, NO, or MAYBE.';
-        showsWord = true;
+        description = 'You know the word.\nGuide the discussion.\nKeep it fair and fun.';
         break;
       case GameRole.agent:
-        description = 'You already know the answer. Guide the group subtly.';
-        showsWord = true;
+        description = 'You know the word.\nAnswer questions carefully.\nDon\'t give it away.';
         break;
       case GameRole.seeker:
-        description = 'Ask questions to find the secret word.';
-        showsWord = false;
+        description = 'Ask smart questions.\nListen closely.\nFind the word.';
         break;
     }
 
     return Padding(
-      padding: const EdgeInsets.all(24.0),
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          RoleIcon(
+            icon: _getRoleIcon(role),
+            color: _getRoleColor(role),
+            size: 80,
+          ),
+          const SizedBox(height: 48),
           Text(
-            'YOU ARE THE',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: AppColors.textSecondary,
+            'You are $article',
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              color: AppColors.textPrimary,
             ),
           ),
           const SizedBox(height: 8),
           Text(
-            role.displayName,
-            style: Theme.of(context).textTheme.displayMedium?.copyWith(
+            role.displayName.toUpperCase(),
+            style: Theme.of(context).textTheme.displayLarge?.copyWith(
               color: _getRoleColor(role),
-              letterSpacing: 2,
+              letterSpacing: 4,
             ),
           ),
-          const SizedBox(height: 24),
-          if (showsWord) ...[
+          const SizedBox(height: 48),
+          
+          if (role == GameRole.seeker) ...[
             Text(
-              'SECRET WORD',
+              'The secret word\nis unknown to you.',
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: AppColors.textSecondary,
+                height: 1.5,
+              ),
+            ),
+          ] else ...[
+            Text(
+              'Your secret word is',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: AppColors.textSecondary,
               ),
             ),
-            const SizedBox(height: 8),
-            Text(
-              secretWord.toUpperCase(),
-              style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                color: AppColors.textPrimary,
+            const SizedBox(height: 16),
+            AppCard(
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+              color: AppColors.elevatedSurface,
+              border: Border.all(color: Colors.transparent),
+              child: Text(
+                secretWord.toUpperCase(),
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: _getRoleColor(role),
+                  letterSpacing: 2,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-            const SizedBox(height: 24),
           ],
+          
+          const SizedBox(height: 48),
           Text(
             description,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: AppColors.textSecondary,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: AppColors.textDisabled,
+              height: 1.5,
             ),
           ),
         ],
@@ -194,3 +219,4 @@ class _RoleRevealScreenState extends ConsumerState<RoleRevealScreen> {
     );
   }
 }
+

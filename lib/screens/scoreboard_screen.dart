@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../widgets/primary_button.dart';
+import '../widgets/app_card.dart';
 import '../theme/colors.dart';
 import '../services/game_engine.dart';
 
@@ -22,16 +23,15 @@ class ScoreboardScreen extends ConsumerWidget {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 32),
               Text(
                 'SCOREBOARD',
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                  color: AppColors.textPrimary,
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                  color: AppColors.textSecondary,
                   letterSpacing: 2,
                 ),
               ),
@@ -43,12 +43,8 @@ class ScoreboardScreen extends ConsumerWidget {
                     final player = sortedPlayers[index];
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 12.0),
-                      child: Container(
+                      child: AppCard(
                         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-                        decoration: BoxDecoration(
-                          color: AppColors.surface,
-                          borderRadius: BorderRadius.circular(16),
-                        ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -63,7 +59,9 @@ class ScoreboardScreen extends ConsumerWidget {
                                 const SizedBox(width: 16),
                                 Text(
                                   player.name,
-                                  style: Theme.of(context).textTheme.titleLarge,
+                                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                    color: AppColors.textPrimary,
+                                  ),
                                 ),
                               ],
                             ),
@@ -82,7 +80,7 @@ class ScoreboardScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 24),
               PrimaryButton(
-                text: 'PLAY NEXT ROUND',
+                text: 'Play Next Round',
                 onPressed: () {
                   engine.nextRound();
                   context.go('/pass_phone');
@@ -94,7 +92,7 @@ class ScoreboardScreen extends ConsumerWidget {
                   engine.resetGame();
                   context.go('/');
                 },
-                child: const Text('END GAME', style: TextStyle(color: AppColors.agentAccent)),
+                child: const Text('End Game', style: TextStyle(color: AppColors.textSecondary)),
               ),
             ],
           ),
@@ -103,3 +101,4 @@ class ScoreboardScreen extends ConsumerWidget {
     );
   }
 }
+

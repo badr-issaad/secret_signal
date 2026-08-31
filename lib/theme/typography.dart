@@ -6,16 +6,16 @@ class AppTypography {
   static TextTheme get textTheme {
     return GoogleFonts.interTextTheme().copyWith(
       displayLarge: GoogleFonts.inter(
-        fontSize: 32,
-        fontWeight: FontWeight.bold,
+        fontSize: 36,
+        fontWeight: FontWeight.w600,
         color: AppColors.textPrimary,
-        letterSpacing: -1,
+        letterSpacing: 4, // Generous letter spacing for Title
       ),
       displayMedium: GoogleFonts.inter(
         fontSize: 28,
-        fontWeight: FontWeight.bold,
+        fontWeight: FontWeight.w500, // Medium/Semibold role titles
         color: AppColors.textPrimary,
-        letterSpacing: -0.5,
+        letterSpacing: 2,
       ),
       titleLarge: GoogleFonts.inter(
         fontSize: 22,
@@ -34,8 +34,8 @@ class AppTypography {
       ),
       labelLarge: GoogleFonts.inter(
         fontSize: 16,
-        fontWeight: FontWeight.w600,
-        color: AppColors.background, // Used on buttons
+        fontWeight: FontWeight.w500,
+        color: AppColors.textPrimary, 
       ),
     );
   }

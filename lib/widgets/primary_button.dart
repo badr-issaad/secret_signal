@@ -17,7 +17,7 @@ class PrimaryButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 60,
+      height: 56,
       child: ElevatedButton(
         onPressed: isLoading
             ? null
@@ -29,7 +29,7 @@ class PrimaryButton extends StatelessWidget {
           backgroundColor: Theme.of(context).colorScheme.primary,
           foregroundColor: Theme.of(context).colorScheme.onPrimary,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(12),
           ),
           elevation: 0,
         ),
@@ -39,11 +39,11 @@ class PrimaryButton extends StatelessWidget {
                 height: 24,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                 ),
               )
             : Text(
-                text.toUpperCase(),
+                text,
                 style: Theme.of(context).textTheme.labelLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),

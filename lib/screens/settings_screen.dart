@@ -14,9 +14,10 @@ class SettingsScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('SETTINGS'),
+        title: const Text('Settings'),
         backgroundColor: Colors.transparent,
         elevation: 0,
+        centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
@@ -92,20 +93,20 @@ class SettingsScreen extends ConsumerWidget {
                   onTap: () => onSelected(option.duration),
                   borderRadius: BorderRadius.circular(12),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
                     decoration: BoxDecoration(
-                      color: isSelected ? AppColors.accent : AppColors.surface,
+                      color: isSelected ? AppColors.accent.withAlpha(51) : AppColors.surface,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
                         color: isSelected ? AppColors.accent : Colors.transparent,
-                        width: 2,
+                        width: 1.5,
                       ),
                     ),
                     alignment: Alignment.center,
                     child: Text(
                       option.label,
                       style: TextStyle(
-                        color: isSelected ? Colors.white : AppColors.textSecondary,
+                        color: isSelected ? AppColors.accent : AppColors.textSecondary,
                         fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                       ),
                     ),
@@ -125,3 +126,4 @@ class _TimerOption {
   final Duration duration;
   const _TimerOption({required this.label, required this.duration});
 }
+

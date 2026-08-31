@@ -11,7 +11,7 @@ class AppTheme {
       colorScheme: const ColorScheme.dark(
         primary: AppColors.accent,
         surface: AppColors.surface,
-        onPrimary: AppColors.background,
+        onPrimary: AppColors.textPrimary,
         onSurface: AppColors.textPrimary,
       ),
       textTheme: AppTypography.textTheme,
@@ -19,7 +19,7 @@ class AppTheme {
       cardTheme: CardThemeData(
         color: AppColors.surface,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(12),
         ),
         elevation: 0,
       ),

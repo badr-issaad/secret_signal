@@ -12,63 +12,79 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 40.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Spacer(flex: 2),
+              const Spacer(flex: 3),
               
               // Title
               Text(
-                'SECRET\nSIGNAL',
+                'SECRET',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                      color: AppColors.textPrimary,
-                      height: 1.1,
-                      letterSpacing: 2,
+                      letterSpacing: 8,
                     ),
               ),
               const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _buildDot(AppColors.accent),
+                  const SizedBox(width: 12),
+                  _buildDot(AppColors.accent),
+                  const SizedBox(width: 12),
+                  _buildDot(AppColors.textDisabled),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'SIGNAL',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                      letterSpacing: 8,
+                    ),
+              ),
+              const SizedBox(height: 24),
               
               // Tagline
               Text(
-                'Someone already knows the answer.',
+                'Someone already knows\nthe answer.',
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: AppColors.accent,
-                      fontWeight: FontWeight.w500,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: AppColors.textSecondary,
                     ),
               ),
               
-              const Spacer(flex: 3),
+              const Spacer(flex: 4),
               
               // Buttons
               PrimaryButton(
-                text: 'PLAY',
+                text: 'Play',
                 onPressed: () {
                   context.push('/setup');
                 },
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               SecondaryButton(
-                text: 'HOW TO PLAY',
+                text: 'How to Play',
                 onPressed: () {
                   // TODO: Navigate to How to Play
                 },
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               SecondaryButton(
-                text: 'WORD PACKS',
+                text: 'Word Packs',
                 onPressed: () {
                   // TODO: Navigate to Word Packs
                 },
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               SecondaryButton(
-                text: 'SETTINGS',
+                text: 'Settings',
                 onPressed: () {
-                  // TODO: Navigate to Settings
+                  context.push('/settings');
                 },
               ),
               
@@ -76,6 +92,17 @@ class HomeScreen extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildDot(Color color) {
+    return Container(
+      width: 6,
+      height: 6,
+      decoration: BoxDecoration(
+        color: color,
+        shape: BoxShape.circle,
       ),
     );
   }

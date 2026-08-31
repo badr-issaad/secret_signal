@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../theme/colors.dart';
 import '../services/game_engine.dart';
 import '../models/game_session.dart';
+import '../widgets/app_card.dart';
 
 class VotingScreen extends ConsumerWidget {
   const VotingScreen({super.key});
@@ -22,18 +23,21 @@ class VotingScreen extends ConsumerWidget {
     final eligiblePlayers = session.players.where((p) => p.id != currentPlayer.id).toList();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('VOTE'),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        automaticallyImplyLeading: false,
-      ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 40.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              Text(
+                'VOTE',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                  color: AppColors.textSecondary,
+                  letterSpacing: 2,
+                ),
+              ),
+              const SizedBox(height: 24),
               Text(
                 'WHO IS THE AGENT?',
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
@@ -49,7 +53,7 @@ class VotingScreen extends ConsumerWidget {
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 48),
               Expanded(
                 child: ListView.builder(
                   itemCount: eligiblePlayers.length,
@@ -62,15 +66,13 @@ class VotingScreen extends ConsumerWidget {
                           _showConfirmationDialog(context, engine, player.id, player.name, ref);
                         },
                         borderRadius: BorderRadius.circular(16),
-                        child: Container(
+                        child: AppCard(
                           padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: AppColors.surface,
-                            borderRadius: BorderRadius.circular(16),
-                          ),
                           child: Text(
                             player.name,
-                            style: Theme.of(context).textTheme.titleLarge,
+                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              color: AppColors.textPrimary,
+                            ),
                           ),
                         ),
                       ),
@@ -90,13 +92,20 @@ class VotingScreen extends ConsumerWidget {
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-        backgroundColor: AppColors.surface,
-        title: const Text('Lock Vote?'),
-        content: Text('Are you sure you want to vote for $accusedName?'),
+        backgroundColor: AppColors.elevatedSurface,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text(
+          'Lock Vote?',
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(color: AppColors.textPrimary),
+        ),
+        content: Text(
+          'Are you sure you want to vote for $accusedName?',
+          style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.textSecondary),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('CANCEL', style: TextStyle(color: AppColors.textSecondary)),
+            child: Text('Cancel', style: TextStyle(color: AppColors.textSecondary)),
           ),
           TextButton(
             onPressed: () {
@@ -110,10 +119,11 @@ class VotingScreen extends ConsumerWidget {
                 context.pop(); // Go back to pass phone screen
               }
             },
-            child: const Text('LOCK VOTE', style: TextStyle(color: AppColors.agentAccent)),
+            child: const Text('Lock Vote', style: TextStyle(color: AppColors.agentAccent, fontWeight: FontWeight.bold)),
           ),
         ],
       ),
     );
   }
 }
+

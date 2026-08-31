@@ -17,64 +17,51 @@ class QuestionRoundScreen extends ConsumerWidget {
 
     if (session == null) return const Scaffold();
 
-    // Find host name
-    String hostName = 'UNKNOWN';
-    for (final player in session.players) {
-      if (session.playerRoles[player.id] == GameRole.host) {
-        hostName = player.name;
-        break;
-      }
-    }
+    if (session == null) return const Scaffold();
 
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 40.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 32),
               Text(
-                'FIND THE SECRET WORD',
+                'QUESTION ROUND',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                  color: AppColors.textSecondary,
+                  letterSpacing: 2,
+                ),
+              ),
+              const Spacer(flex: 1),
+              
+              Text(
+                'Ask smart questions.\nFind the secret word.',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: AppColors.textSecondary,
-                  letterSpacing: 1.5,
-                ),
-              ),
-              const Spacer(),
-              
-              CountdownTimer(
-                duration: session.settings.questionTime,
-                onTimerComplete: () {
-                  engine.handleTimeUp();
-                  // For now navigate to result if time is up, or home
-                  context.go('/');
-                },
-              ),
-              
-              const Spacer(),
-              
-              Text(
-                'HOST:',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: AppColors.textSecondary,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                hostName.toUpperCase(),
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                  color: AppColors.hostAccent,
+                  color: AppColors.textPrimary,
+                  height: 1.4,
+                  fontWeight: FontWeight.normal,
                 ),
               ),
               
               const Spacer(flex: 2),
               
+              Center(
+                child: CountdownTimer(
+                  duration: session.settings.questionTime,
+                  onTimerComplete: () {
+                    engine.handleTimeUp();
+                    context.go('/');
+                  },
+                ),
+              ),
+              
+              const Spacer(flex: 3),
+              
               PrimaryButton(
-                text: 'ANSWER FOUND',
+                text: 'Answer Found',
                 onPressed: () {
                   _showConfirmationDialog(context, ref);
                 },
@@ -90,13 +77,20 @@ class QuestionRoundScreen extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: AppColors.surface,
-        title: const Text('Confirm'),
-        content: const Text('Did someone correctly guess the secret word?'),
+        backgroundColor: AppColors.elevatedSurface,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text(
+          'Answer Found?',
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(color: AppColors.textPrimary),
+        ),
+        content: Text(
+          'Did someone correctly guess the secret word?',
+          style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.textSecondary),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('NO'),
+            child: Text('Cancel', style: TextStyle(color: AppColors.textSecondary)),
           ),
           TextButton(
             onPressed: () {
@@ -104,10 +98,11 @@ class QuestionRoundScreen extends ConsumerWidget {
               ref.read(gameEngineProvider.notifier).markAnswerFound();
               context.push('/guesser');
             },
-            child: const Text('YES', style: TextStyle(color: AppColors.accent)),
+            child: const Text('Yes', style: TextStyle(color: AppColors.accent, fontWeight: FontWeight.bold)),
           ),
         ],
       ),
     );
   }
 }
+
